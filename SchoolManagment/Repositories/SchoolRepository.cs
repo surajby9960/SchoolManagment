@@ -118,7 +118,7 @@ namespace SchoolManagment.Repositories
             using(DbConnection dbConnection=ReaderConnection)
             {
                 await dbConnection.OpenAsync();
-               var par = new {pageno,pagesize, schoolname };
+               var par = new {pageno,pagesize, schoolname, val };
                 var result = await dbConnection.QueryMultipleAsync(qry, par);
                 var sch = await result.ReadAsync<School>();
                 var pagination = await result.ReadAsync<PaginationModel>();

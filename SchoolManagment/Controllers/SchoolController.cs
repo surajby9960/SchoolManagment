@@ -43,29 +43,8 @@ namespace SchoolManagment.Controllers
                 return Ok(ex.Message);
             }
         }
-        [HttpGet("GetAllSchool")]
-       /* public async Task<IActionResult> GetAllSchool()
-        {
-            BaseResponse baseResponse = new BaseResponse();
-            try
-            {
-                var res=await _repo.GetSchool();
-                if(res==null)
-                {
-                    baseResponse.StatusMessage = "Data not found";
-                }
-                else
-                {
-                    baseResponse.StatusMessage = "Data fetched Succesfully";
-                    
-                    baseResponse.ResponseData = res;
-                }
-                return Ok(baseResponse);
-            } catch(Exception ex)
-            {
-                return StatusCode(500,ex.Message);
-            }
-        }*/
+        
+      
         [HttpGet("GetAllSchoolById")]
         public async Task<IActionResult> GetAllSchoolById(int id )
         {
@@ -135,6 +114,7 @@ namespace SchoolManagment.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        [HttpGet("Teacherbypagination")]
         public async Task<IActionResult> ByPagination(int pageno,int pagesize,string? schoolname)
         {
             try
@@ -142,7 +122,11 @@ namespace SchoolManagment.Controllers
                 var response = await _repo.GetSchool(pageno, pagesize, schoolname);
                 List<School> schools = new List<School>();
                 schools.Add((School)response.ResponseData1);
-                return Ok(schools);
+               
+                BaseResponse baseResponse = null;
+                baseResponse.ResponseData = schools;
+                baseResponse.ResponseData1 = response.ResponseData;
+                return Ok(baseResponse);
             }catch(Exception ex)
             {
                 return BadRequest(ex.Message);
