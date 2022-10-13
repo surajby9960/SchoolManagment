@@ -73,7 +73,9 @@ namespace SchoolManagment.Repositories
 
                     var students = await dbConnection.QueryAsync<Student>("select * from tblstudent where classid=@id", new { id = c2.schoolid });
                     c2.students = students.ToList();
+                    
                 }
+               
                 return cls1;
             }
                         

@@ -8,6 +8,7 @@ builder.Services.AddSingleton<BaseAsyncRepository>();
 builder.Services.AddScoped<ISchoolrepository, SchoolRepository>();
 builder.Services.AddScoped<IClassRepository, ClassRepository>();
 builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
+builder.Services.AddScoped<ISportsRepository, SportsRepository>();
 
 
 

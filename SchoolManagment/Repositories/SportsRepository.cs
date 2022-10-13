@@ -48,7 +48,7 @@ namespace SchoolManagment.Repositories
         public async Task<Sports> GetSportById(int id)
         {
 
-            var qry = "select * from tblsports where sportsid=@id";
+            var qry = "select * from tblsports where sportid=@id";
             using (DbConnection dbConnection = WriterConnection)
             {
                 await dbConnection.OpenAsync();

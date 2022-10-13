@@ -120,10 +120,10 @@ namespace SchoolManagment.Controllers
             try
             {
                 var response = await _repo.GetSchool(pageno, pagesize, schoolname);
-                List<School> schools = new List<School>();
-                schools.Add((School)response.ResponseData1);
+                List<School> schools = (List<School>)response.ResponseData1;
                
-                BaseResponse baseResponse = null;
+               
+                BaseResponse baseResponse = new BaseResponse();
                 baseResponse.ResponseData = schools;
                 baseResponse.ResponseData1 = response.ResponseData;
                 return Ok(baseResponse);

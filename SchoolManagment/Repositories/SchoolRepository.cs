@@ -66,14 +66,15 @@ namespace SchoolManagment.Repositories
                 using (DbConnection dbConnection = WriterConnection)
                 {
                     await dbConnection.OpenAsync();
-                    var qry = "insert into tblclass(classstd, classfess, schoolid ,teacherid ,createddate,isdeleted)" +
-                        "values(@classstd, @classfess ,@schoolid ,@teacherid ,@createddate,0) ";
+                    var qry = "insert into tblclass(classstd, classfess, schoolid  ,createddate,isdeleted)" +
+                        "values(@classstd, @classfess ,@schoolid ,@createddate,0) ";
                     foreach (var c in cls)
                     {
                         c.createddate = DateTime.Now;
                         c.schoolid=sid;
                         result=await dbConnection.ExecuteAsync(qry, c);
                         result++;
+                        await InsertStudent(c.students, c.classid, sid);
                     }
                     return result - 1;
 
@@ -82,7 +83,26 @@ namespace SchoolManagment.Repositories
             return 0;
            
         }
-       
+
+        private async Task InsertStudent(List<Student>? students, int classid, int sid)
+        {
+
+            if(students.Count>0)
+            {
+                using(DbConnection dbConnection = WriterConnection)
+                {
+                    var qry = @"Insert into tblstudent(studname ,studdob ,studaddress ,studgender ,admissiondate, sportid, classid ,isdeleted)
+                                values(@studname ,@studdob ,@studaddress ,@studgender ,@admissiondate, @sportid, @classid ,0)";
+                    foreach(Student student in students)
+                    {
+                        student.admissiondate = DateTime.Now;
+                        student.classid=classid;
+                        student.schoolid = sid;
+                        var res=await dbConnection.ExecuteAsync(qry, student);
+                    }
+                }
+            }
+        }
 
         public async Task<int> DeleteSchool(int id)
         {
@@ -112,7 +132,7 @@ namespace SchoolManagment.Repositories
                 pagesize = 5;
             }
             var val = (pageno - 1) * pagesize;
-            var qry = @"select * from tblschool where isdeleted=0 and (schoolname like '%'+@schoolname+'%' or schoolname is null) order by schoolid desc
+            var qry = @"select * from tblschool where isdeleted=0 and (schoolname like '%'+@schoolname+'%' or @schoolname is null) order by schoolid desc
                         offset @val rows fetch next @pagesize rows only;
                         select @pageno as pageno,count(distinct schoolid) as TotalPages from tblschool where isdeleted = 0";
             using(DbConnection dbConnection=ReaderConnection)
@@ -144,16 +164,22 @@ namespace SchoolManagment.Repositories
         public async Task<School> GetSchoolById(int id)
         {
             School school = new School();
+             InsertClass insertClass = new InsertClass();
             var qry = "select * from tblschool where schoolid=@id";
-            using( DbConnection dbConnection=ReaderConnection)
+            using (DbConnection dbConnection = ReaderConnection)
             {
                 await dbConnection.OpenAsync();
-                 school=await dbConnection.QuerySingleAsync<School>(qry, new {id});
-                var cls=await dbConnection.QueryAsync<InsertClass>("select * from tblclass where schoolid=@id", new { id = school.schoolid });
+                school = await dbConnection.QuerySingleAsync<School>(qry, new { id });
+                var cls = await dbConnection.QueryAsync<InsertClass>("select * from tblclass where schoolid=@id", new { id = school.schoolid });
                 var tech = await dbConnection.QueryAsync<Teacher>("select * from tblteacher where schoolid=@id", new { id = school.schoolid });
                 school.classes = cls.ToList();
                 school.teachers = tech.ToList();
-            }
+                foreach (var c in school.classes)
+                {
+                    var stud = await dbConnection.QueryAsync<Student>("Select * from tblstudent where schoolid=@id and classid=@cid", new { id = school.schoolid,cid=c.classid });
+                    c.students = stud.ToList();
+                }
+            }   
             return school;
         }
 

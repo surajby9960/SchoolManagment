@@ -10,8 +10,9 @@
         public DateTime admissiondate { get; set; }
         public int sportid { get; set; }
         public int classid { get; set; }
+        public int schoolid { get; set; }
         public bool isdeleted { get; set; }
 
     }
 }
-//studid studname studdob studaddress studgender admissiondate sportid classid 
+//studid ,studname ,studdob ,studaddress ,studgender ,admissiondate, sportid, classid ,isdeleted

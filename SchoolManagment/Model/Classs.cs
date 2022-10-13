@@ -2,7 +2,7 @@
 {
     public class InsertClass
     {
-       // public int classid { get; set; }
+        public int classid { get; set; }
         public string? classstd { get; set; }
         public int classfess { get; set; }
         public int schoolid { get; set; }
