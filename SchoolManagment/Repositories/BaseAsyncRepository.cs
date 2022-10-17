@@ -18,7 +18,7 @@ namespace SchoolManagment.Repositories
         {
             get
             {
-                switch(databasetype)
+                switch (databasetype)
                 {
                     case "SqlServer":
                         return new SqlConnection(sqlwriterconnection);
@@ -31,7 +31,7 @@ namespace SchoolManagment.Repositories
         {
             get
             {
-                switch(databasetype)
+                switch (databasetype)
                 {
                     case "SqlServer":
                         return new SqlConnection(sqlreaderconnection);

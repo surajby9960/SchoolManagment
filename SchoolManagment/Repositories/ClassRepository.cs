@@ -71,7 +71,7 @@ namespace SchoolManagment.Repositories
                 foreach (InsertClass c2 in cls1)
                 {
 
-                    var students = await dbConnection.QueryAsync<Student>("select * from tblstudent where classid=@id", new { id = c2.schoolid });
+                    var students = await dbConnection.QueryAsync<Student>("select * from tblstudent where classid=@id", new { id = c2.classid });
                     c2.students = students.ToList();
                     
                 }
